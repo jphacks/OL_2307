@@ -12,7 +12,10 @@ async def get_chatrooms(authorization: str = Header(None)):
     # 私は誰か
     if authorization is None:
         raise HTTPException(status_code=401)
-    uid = firebase.get_user_uid(authorization)
+    try:
+        uid = firebase.get_user_uid(authorization)
+    except:
+        raise HTTPException(status_code=401)
     
     # 友達のリストが欲しい
     friend_list = Friend.get_my_friends(uid)
@@ -25,11 +28,11 @@ async def get_chatrooms(authorization: str = Header(None)):
 
         response.append(
             {
-                "uid": friend_info.uid,
-                "display_name": friend_info.display_name,
-                "icon_path": friend_info.icon_path,
+                "friendId": friend_info.uid,
+                "friendName": friend_info.display_name,
+                "friendIconPath": friend_info.icon_path,
                 "message": latest_message.message,
-                "create_at": latest_message.create_at,
+                "createdAt": latest_message.create_at,
             }
         )
 
