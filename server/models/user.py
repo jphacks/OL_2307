@@ -1,10 +1,10 @@
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from db import Base
-from friend import Friend
-from message import Messeage
-from card import Card
+from models.db import Base
+import models.friend
+import models.message
+import models.card
 
 class User(Base):
     __tablename__ = "users"

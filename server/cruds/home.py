@@ -2,7 +2,7 @@ from typing import List, Tuple, Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
-import shemas.home as home_shemas
+import schemas.home as home_shcemas
 import models.user as user_model
 import models.friend as friend_model
 import models.message as message_model

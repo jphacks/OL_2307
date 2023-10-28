@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, ForeignKey, DATETIME
 from sqlalchemy.orm import relationship
 
-from db import Base
-from user import User
+from models.db import Base
+from models.user import User
 
 class Message(Base):
     __tablename__ = "messages"
