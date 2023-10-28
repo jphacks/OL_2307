@@ -16,4 +16,4 @@ class Card(Base  ):
     card_type = Column(Integer)
     card_title = Column(String)
 
-    card = relationship("Card", foreign_keys= ["Card.to_user_id", "Card.from_user_id"], back_populates="users")
+    users = relationship("User", foreign_keys= ["Card.to_user_id", "Card.from_user_id"], back_populates="cards")

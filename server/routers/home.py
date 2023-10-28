@@ -19,7 +19,7 @@ def example(custom_header: Optional[str] = Header(None)):
 # friend情報(uid,display_name,icon_path,message)を取得する get
 @router.get("/homes", response_model=List[home_schema.HomeBase])
 async def get_friends(db: AsyncSession = Depends(get_db)):
-    return await home_crud.get_friend(db)
+    return await home_crud.get_friends(db)
 
 # messageが更新されたuserとそのuser,messageを取得する get
 @router.get("/latest_message", response_model=List[home_schema.HomeBase])

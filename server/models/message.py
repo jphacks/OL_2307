@@ -14,4 +14,4 @@ class Message(Base):
     message = Column(String, primary_key=True)
     create_at = Column(DATETIME, primary_key=True)
 
-    message = relationship("Message", foreign_keys= ["Message.to_user_id", "Message.from_user_id"], back_populates="users")
+    users = relationship("User", foreign_keys= ["Message.to_user_id", "Message.from_user_id"], back_populates="messages")

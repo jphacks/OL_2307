@@ -9,4 +9,4 @@ class Friend(Base):
     to_user_id = Column(String, ForeignKey("users.uid"), primary_key=True)
     from_user_id = Column(String, ForeignKey("users.uid"), primary_key=True)
     
-    user = relationship("User", foreign_keys = ["Friend.to_user_id", "Friend.from_user_id"], back_populates="friends")
+    users = relationship("User", foreign_keys = ["Friend.to_user_id", "Friend.from_user_id"], back_populates="friends")
