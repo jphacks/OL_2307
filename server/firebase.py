@@ -7,8 +7,6 @@ from models.user import User
 # firebase用の環境変数を設定
 os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
 
-cwd = os.getcwd()
-print(cwd)
 cred = credentials.Certificate("/src/server/jphacks2023-firebase-adminsdk-p2xu8-bfdf4713b0.json")
 firebase_admin.initialize_app(cred)
 
