@@ -2,7 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 
+from models.db import get_db
 import schemas.home as home_schema
+import cruds.home as home_crud
+
 
 router = APIRouter()
 
@@ -15,7 +18,7 @@ def example(custom_header: Optional[str] = Header(None)):
 
 # friend情報(uid,display_name,icon_path,message)を取得する get
 @router.get("/homes", response_model=List[home_schema.HomeBase])
-async def list_friends(db: AsyncSession = Depends(get_db)):
+async def get_friends(db: AsyncSession = Depends(get_db)):
     return await home_crud.get_friend(db)
 
 # messageが更新されたuserとそのuser,messageを取得する get
