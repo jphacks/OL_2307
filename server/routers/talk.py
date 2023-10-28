@@ -21,7 +21,7 @@ def example(custom_header: Optional[str] = Header(None)):
 # friend情報(uid,display_name,icon_path,message,create_at)を取得する get
 @router.get("/")
 async def list_friends(db: AsyncSession = Depends(get_db)):
-    return await talk_crud.get_tasks_with_done(db)
+    return await talk_crud.get_friend_info(db)
 
 
 # 更新されたmessageを取得する get
