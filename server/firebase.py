@@ -25,12 +25,9 @@ def get_user_uid(auth_header: str) -> str:
 
     if auth_info[0] != "Bearer":
         raise ValueError("The specified authentication method is not available")
-    
-    if auth_info[0].startswith("test-"):
-        uid = 
-    else:
-        decoded_token = auth.verify_id_token(auth_info[1])
-        uid = decoded_token['uid']
+
+    decoded_token = auth.verify_id_token(auth_info[1])
+    uid = decoded_token['uid']
     
     # ユーザーが作成済みでなければ作成
     db_user = User.get_user(uid)
