@@ -31,6 +31,7 @@ async def get_chatrooms(authorization: str = Header(None)):
                 "friendId": friend_info.uid,
                 "friendName": friend_info.display_name,
                 "friendIconPath": friend_info.icon_path,
+                "messageType": latest_message.message_type,
                 "message": latest_message.message,
                 "createdAt": latest_message.create_at,
             }

@@ -8,6 +8,7 @@ class Message(Base):
     uid = Column(String, primary_key=True)
     to_user_id = Column(String)
     from_user_id = Column(String)
+    message_type = Column(String) # sentence, image, card
     message = Column(String)
     create_at = Column(DATETIME)
 

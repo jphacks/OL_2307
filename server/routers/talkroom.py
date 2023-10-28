@@ -30,4 +30,3 @@ async def get_message(friend_uid: str, authorization: str = Header(None)):
         )
 
     return response
-
