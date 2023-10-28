@@ -2,6 +2,8 @@ import firebase_admin
 import os
 from firebase_admin import credentials, auth
 
+from models.user import User
+
 # firebase用の環境変数を設定
 os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
 
@@ -28,5 +30,11 @@ def get_user_uid(auth_header: str) -> str:
 
     decoded_token = auth.verify_id_token(auth_info[1])
     uid = decoded_token['uid']
+    
+    # ユーザーが作成済みでなければ作成
+    db_user = User.get_user(uid)
+    if db_user is None:
+        fb_user = auth.get_user(uid)
+        new_db_user = User(uid, fb_user.displayName, fb_user.photoURL)
 
     return uid

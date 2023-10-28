@@ -7,6 +7,15 @@ class User(Base):
     uid =  Column(String, primary_key=True, unique=True)
     display_name = Column(String)
     icon_path = Column(String)
+    
+    def __init__(self, uid, display_name, icon_path):
+        self.uid = uid
+        self.display_name = display_name
+        self.icon_path = icon_path
+        
+    def insert(self):
+        session.add(self)
+        session.commit()
 
     def get_user(uid):
         return session.execute(
