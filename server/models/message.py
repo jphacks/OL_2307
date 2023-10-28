@@ -7,11 +7,11 @@ from models.user import User
 class Message(Base):
     __tablename__ = "messages"
 
-    to_user_id = Column(String, ForeignKey("users.uid"))
-    from_user_id = Column(String, ForeignKey("users.uid"))
+    to_user_id = Column(String)
+    from_user_id = Column(String)
 
     uid =  Column(String, primary_key=True)
     message = Column(String, primary_key=True)
     create_at = Column(DATETIME, primary_key=True)
 
-    users = relationship("User", foreign_keys= ["Message.to_user_id", "Message.from_user_id"], back_populates="messages")
+    #users = relationship("User", back_populates="messages")

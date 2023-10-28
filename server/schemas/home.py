@@ -8,7 +8,7 @@ class HomeBase(BaseModel):
     display_name: Optional[str]
     icon_path: Optional[str]
     message: Optional[str]
-    create_at: Optional[date] = Field(default_factory=date.today)
+    #create_at: Optional[date] = Field(default_factory=date.today)
 
 class HomeCreate(HomeBase):
     class Config:
