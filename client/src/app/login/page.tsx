@@ -32,9 +32,9 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const auth = getAuth(initializeApp(firebaseConfig));
+export const auth = getAuth(initializeApp(firebaseConfig));
 
-const Page = () => {
+const Login = () => {
   const router = useRouter()
   const [userData, setUserData] = useRecoilState(sessionState);
   const { state, dispatch, credential, error } = useAuth(auth);
@@ -47,8 +47,9 @@ const Page = () => {
   useEffect(() => {
     if (credential) {
       const token = GoogleAuthProvider.credentialFromResult(credential)?.idToken;
+      console.log(credential);
       if(token) {
-        console.log(token);
+        
         setUserData({
             token: token,
             uid: credential.user.uid,
@@ -70,11 +71,17 @@ const Page = () => {
   const handleLogin = () => dispatch({ type: 'login' });
   const handleLogout = () => dispatch({ type: 'logout' });
   return (
-    <div>
-      <button onClick={handleLogin}>ログイン</button>
-      <button onClick={handleLogout}>ログアウト</button>
+    <div className="hero min-h-screen" style={{backgroundImage: 'url(https://daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.jpg)'}}>
+      <div className="hero-overlay bg-opacity-60"></div>
+      <div className="hero-content text-center text-neutral-content">
+        <div className="max-w-md">
+          <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
+          <p className="mb-5">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
+          <button className="btn btn-primary" onClick={handleLogin}>Googleではじめる</button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Page;
+export default Login;
