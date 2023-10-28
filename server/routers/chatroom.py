@@ -38,3 +38,21 @@ async def get_chatrooms(authorization: str = Header(None)):
         )
 
     return response
+
+@router.post("/chatrooms/{friend_uid}")
+async def post_chatrooms(friend_name: str, authorization: str = Header(None)):
+    # 私は誰か
+    if authorization is None:
+        raise HTTPException(status_code=401)
+    try:
+        uid = firebase.get_user_uid(authorization)
+    except:
+        raise HTTPException(status_code=401)
+    
+    new_friend=Friend(
+        to_user_id = uid,
+        from_user_id = friend_name,
+    )
+    new_friend.insert()
+
+    return {"message":"created"}
