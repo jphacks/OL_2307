@@ -1,7 +1,6 @@
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, select
 
-from models.db import Base
+from models.db import Base, session
 
 class User(Base):
     __tablename__ = "users"
@@ -9,9 +8,7 @@ class User(Base):
     display_name = Column(String)
     icon_path = Column(String)
 
-"""
-    friends = relationship("Friend", primaryjoin="or_(User.uid == Friend.to_user_id, User.uid == Friend.from_user_id)", back_populates="users")
-    messages = relationship("Message", primaryjoin="or_(User.uid == Message.to_user_id, User.uid == Message.from_user_id)", back_populates="users")
-    cards = relationship("Card", primaryjoin="or_(User.uid == Card.to_user_id, User.uid == Card.from_user_id)", back_populates="users")
-"""
-    
+    def get_user(uid):
+        return session.execute(
+            select(User).where(User.uid==uid)
+        ).first()

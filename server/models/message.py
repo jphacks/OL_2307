@@ -1,17 +1,17 @@
-from sqlalchemy import Column, String, ForeignKey, DATETIME
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, DATETIME, select
 
-from models.db import Base
-from models.user import User
+from models.db import Base, session
+
 
 class Message(Base):
     __tablename__ = "messages"
-
+    uid = Column(String, primary_key=True)
     to_user_id = Column(String)
     from_user_id = Column(String)
+    message = Column(String)
+    create_at = Column(DATETIME)
 
-    uid =  Column(String, primary_key=True)
-    message = Column(String, primary_key=True)
-    create_at = Column(DATETIME, primary_key=True)
-
-    #users = relationship("User", back_populates="messages")
+    def get_latest_message(me, friend):
+        return session.execute(
+            select(Message).where((Message.to_user_id == me or Message.from_user_id == me)and(Message.to_user_id == friend or Message.from_user_id == friend)).order_by(Message.create_at.desc())
+        ).first()
