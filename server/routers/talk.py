@@ -4,9 +4,9 @@ from typing import List, Optional
 from datetime import date
 
 
-from server.models.db import get_db
-import server.schemas.talk as talk_schemas
-import server.cruds.talk as talk_crud
+from models.db import get_db
+import schemas.talk as talk_schemas
+import cruds.talk as talk_crud
 
 
 router = APIRouter()

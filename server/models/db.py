@@ -1,9 +1,9 @@
-"""
+
 from sqlalchemy import create_engine
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-
+"""
 engine = create_engine(
     f"mysql://user:password@db:3306/jphacks?charset=utf8"
 )
@@ -21,7 +21,7 @@ def get_db():
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-ASYNC_DB_URL = "mysql+aiomysql://root@db:3306/demo?charset=utf8"
+ASYNC_DB_URL = "mysql+aiomysql://user:password@db:3306/jphacks?charset=utf8"
 
 async_engine = create_async_engine(ASYNC_DB_URL, echo=True)
 async_session = sessionmaker(

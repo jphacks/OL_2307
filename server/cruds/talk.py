@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import server.models.user as user_model
-import server.models.message as message_model
-import server.schemas.talk as talk_schema
+import models.user as user_model
+import models.message as message_model
+import schemas.talk as talk_schema
 from datetime import date
 import ast
 from typing import List, Tuple, Optional
@@ -30,10 +30,3 @@ async def get_talk(db: AsyncSession) -> List[Tuple[str, str, date]]:
         )
     )
     return result.all()
-
-async def create_talk()
-
-async def get_talk()
-
-async def delete_talk()
-
