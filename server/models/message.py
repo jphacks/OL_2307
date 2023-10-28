@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from db import Base
 from user import User
 
-class Messeage(Base):
+class Message(Base):
     __tablename__ = "messages"
 
     to_user_id = Column(String)
