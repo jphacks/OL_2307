@@ -55,12 +55,17 @@ async def post_chatrooms(friend_uid: str, authorization: str = Header()):
     except:
         raise HTTPException(status_code=401)
 
-    new_friend=Friend(
+    new_to_friend=Friend(
         to_user_id = uid,
         from_user_id = friend_uid,
     )
+    new_from_friend=Friend(
+        to_user_id = friend_uid,
+        from_user_id = uid,
+    )
     try:
-        new_friend.insert()
+        new_to_friend.insert()
+        new_from_friend.insert()
     except sqlalchemy.exc.IntegrityError:
         return HTTPException(400)
 
