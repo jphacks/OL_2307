@@ -18,16 +18,17 @@ async def get_message(friend_uid: str, authorization: str = Header(None)):
         uid = firebase.get_user_uid(authorization)
     except:
         raise HTTPException(status_code=401)
-    
+
     message_list = Message.get_message_list(uid, friend_uid)
 
     response = []
     for message in message_list:
+        print(message)
         response.append(
             {
-                "fromUserId": message.from_user_id,
-                "message": message.message,
-                "createdAt": message.create_at,
+                "fromUserId": message[0].from_user_id,
+                "message": message[0].message,
+                "createdAt": message[0].create_at,
             }
         )
 
@@ -46,7 +47,7 @@ async def post_messages(message_body: MessageBody, authorization: str = Header(N
         uid = firebase.get_user_uid(authorization)
     except:
         raise HTTPException(status_code=401)
-    
+
     new_message = Message(
         to_user_id= uid,
         from_user_id= message_body.recive_user,
@@ -54,6 +55,6 @@ async def post_messages(message_body: MessageBody, authorization: str = Header(N
         message= message_body.message,
     )
     new_message.insert()
-    
+
     return {"message", "created"}
 
