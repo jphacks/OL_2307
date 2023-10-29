@@ -1,22 +1,22 @@
 import datetime
 from sqlalchemy import Column, String, DATETIME, select
-from models.db import Base, session
+from models.db import Base, session, engine
 
 import uuid
 
 
 class Message(Base):
     __tablename__ = "messages"
-    uid = Column(String, primary_key=True)
-    to_user_id = Column(String)
-    from_user_id = Column(String)
-    message_type = Column(String) # sentence, image, card
-    message = Column(String)
+    uid = Column(String(255), primary_key=True)
+    to_user_id = Column(String(255))
+    from_user_id = Column(String(255))
+    message_type = Column(String(255)) # sentence, image, card
+    message = Column(String(255))
     # sentence: 文字列
     # image: 画像のパス
     # card: {color: "", type: "", title: "", message: ""}
     create_at = Column(DATETIME)
-    
+
     def __init__(self, to_user_id, from_user_id, message_type, message):
         self.uid = uuid.uuid4()
         self.to_user_id = to_user_id
@@ -24,7 +24,7 @@ class Message(Base):
         self.message_type = message_type
         self.message = message
         self.create_at = datetime.datetime.utcnow()
-            
+
     def insert(self):
         session.add(self)
         session.commit()
@@ -33,12 +33,10 @@ class Message(Base):
         return session.execute(
             select(Message).where((Message.to_user_id == me or Message.from_user_id == me)and(Message.to_user_id == friend or Message.from_user_id == friend)).order_by(Message.create_at.desc())
         ).first()
-    
+
     def get_message_list(me, friend):
         return session.execute(
             select(Message).where((Message.to_user_id == me or Message.from_user_id == me)and(Message.to_user_id == friend or Message.from_user_id == friend)).order_by(Message.create_at.desc())
         ).all()
-        
-        
-    
-  
+
+Base.metadata.create_all(engine)

@@ -1,11 +1,11 @@
 from sqlalchemy import Column, String, select, DATETIME, insert
 
-from models.db import Base, session
+from models.db import Base, session, engine
 
 class Friend(Base):
     __tablename__ = "friends"
-    to_user_id = Column(String, primary_key=True)
-    from_user_id = Column(String, primary_key=True)
+    to_user_id = Column(String(255), primary_key=True)
+    from_user_id = Column(String(255), primary_key=True)
     last_talk = Column(DATETIME)
 
     def __init__(self, to_user_id, from_user_id):
@@ -26,4 +26,5 @@ class Friend(Base):
     def post_new_friend(me, friend):
         session.add()
         session.commit()
-        
+
+Base.metadata.create_all(engine)
