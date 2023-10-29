@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, UploadFile
 
 from pydantic import BaseModel
 import firebase
@@ -55,7 +55,12 @@ async def post_messages(message_body: MessageBody, authorization: str = Header(N
     )
     new_message.insert()
 
-
-
     return {"message", "created"}
 
+
+@router.post("/images")
+async def post_images(upload_file: UploadFile):
+    path = f"/src/server/files/{upload_file.filename}"
+    with open(path, "wb+") as buffer:
+        shutil.copyfileobj(upload_file.file, buffer)
+    return {"filename": path}
