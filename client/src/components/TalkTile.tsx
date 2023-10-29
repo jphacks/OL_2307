@@ -19,7 +19,8 @@ export default function TalkTile(props: props) {
 	const [friend, setFriend] = useRecoilState(talkFriend);
 
 	const getTimeString = () => {
-		return props.createdAt.split(' ')[1];
+		if(props.createdAt) return props.createdAt.split(' ')[1];
+		else return props.createdAt; 
 	}
 
 	return (

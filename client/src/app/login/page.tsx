@@ -46,18 +46,19 @@ const Login = () => {
   }, [dispatch]);
   useEffect(() => {
     if (credential) {
-      const token = GoogleAuthProvider.credentialFromResult(credential)?.idToken;
-      console.log(credential);
-      if(token) {
-        
-        setUserData({
-            token: token,
-            uid: credential.user.uid,
-            name: credential.user.displayName ?? '',
-            iconParh: credential.user.photoURL ?? ''
-        });
-        token && sessionStorage.setItem('token', token);
-      }
+      auth?.currentUser?.getIdToken(/* forceRefresh */ true).then((idToken) => {
+        if(idToken) {
+          setUserData({
+              token: idToken,
+              uid: credential.user.uid,
+              name: credential.user.displayName ?? '',
+              iconParh: credential.user.photoURL ?? ''
+          });
+          idToken && sessionStorage.setItem('token', idToken);
+        }
+      }).catch(function(error) {
+        // Handle error
+      });      
     } else {
       sessionStorage.removeItem('token');
     }
@@ -75,7 +76,8 @@ const Login = () => {
       <div className="hero-overlay bg-opacity-60"></div>
       <div className="hero-content text-center text-neutral-content">
         <div className="max-w-md">
-          <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
+          <h1 className="mb-5 text-5xl font-bold">ゆる友</h1>
+          <h2>~最近調子どう？~</h2>
           <p className="mb-5">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
           <button className="btn btn-primary" onClick={handleLogin}>Googleではじめる</button>
         </div>
