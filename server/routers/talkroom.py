@@ -61,7 +61,8 @@ async def post_messages(message_body: MessageBody, authorization: str = Header(N
 
 @router.post("/images")
 async def post_images(upload_file: UploadFile):
-    file_name = f"{uuid.uuid4()}-{upload_file.filename}"
+    type = upload_file.filename.split(".")[-1]
+    file_name = f"{uuid.uuid4()}.{type}"
     path = f"/src/server/image/{file_name}"
     with open(path, "wb+") as buffer:
         shutil.copyfileobj(upload_file.file, buffer)
