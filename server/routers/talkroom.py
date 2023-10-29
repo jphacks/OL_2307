@@ -68,7 +68,7 @@ async def post_images(upload_file: UploadFile):
         shutil.copyfileobj(upload_file.file, buffer)
     return {"filename": file_name}
 
-@router.get("/image/{file_name}")
+@router.get("/images/{file_name}")
 async def get_image(file_name: str):
     type = file_name.split(".")[-1]
     return FileResponse(path=f"/src/server/image/{file_name}", media_type=f"image/{type}")
