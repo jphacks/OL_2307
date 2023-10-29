@@ -5,7 +5,7 @@ from firebase_admin import credentials, auth
 from models.user import User
 
 # firebase用の環境変数を設定
-os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
+# os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
 
 cred = credentials.Certificate("/src/server/jphacks2023-firebase-adminsdk-p2xu8-bfdf4713b0.json")
 firebase_admin.initialize_app(cred)
@@ -28,12 +28,12 @@ def get_user_uid(auth_header: str) -> str:
 
     decoded_token = auth.verify_id_token(auth_info[1])
     uid = decoded_token['uid']
-    
+
     # ユーザーが作成済みでなければ作成
     db_user = User.get_user(uid)
     if db_user is None:
         fb_user = auth.get_user(uid)
-        new_db_user = User(uid, fb_user.displayName, fb_user.photoURL)
+        new_db_user = User(uid, fb_user.display_name, fb_user.photo_url)
         new_db_user.insert()
-        
+
     return uid

@@ -16,10 +16,10 @@ async def get_chatrooms(authorization: str = Header(None)):
         uid = firebase.get_user_uid(authorization)
     except:
         raise HTTPException(status_code=401)
-    
+
     # 友達のリストが欲しい
     friend_list = Friend.get_my_friends(uid)
-    
+
     # 友達の表示名とアイコンと直近のメッセージ
     response = []
     for friend in friend_list:
@@ -48,7 +48,7 @@ async def post_chatrooms(friend_name: str, authorization: str = Header(None)):
         uid = firebase.get_user_uid(authorization)
     except:
         raise HTTPException(status_code=401)
-    
+
     new_friend=Friend(
         to_user_id = uid,
         from_user_id = friend_name,
