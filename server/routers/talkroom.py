@@ -49,11 +49,13 @@ async def post_messages(message_body: MessageBody, authorization: str = Header(N
 
     new_message = Message(
         to_user_id= uid,
-        from_user_id= message_body.recive_user,
-        message_type= message_body.message_type,
+        from_user_id = message_body.recive_user,
+        message_type = message_body.message_type,
         message= message_body.message,
     )
     new_message.insert()
+
+
 
     return {"message", "created"}
 
