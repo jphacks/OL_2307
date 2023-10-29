@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Header, HTTPException
+import sqlalchemy
 
 import firebase
 from models.friend import Friend
@@ -19,18 +20,23 @@ async def get_chatrooms(authorization: str = Header(None)):
 
     # 友達のリストが欲しい
     friend_list = Friend.get_my_friends(uid)
-
     # 友達の表示名とアイコンと直近のメッセージ
     response = []
     for friend in friend_list:
-        friend_info=User.get_user(friend)
-        latest_message=Message.get_latest_message(uid, friend)
+        friend_info=User.get_user(friend[0])
+        if friend_info is None: HTTPException("400")
+        latest_message=Message.get_latest_message(uid, friend[0])
+        if latest_message is None:
+            latest_message = Message("", "", "", "")
+            latest_message.create_at = None
+        else:
+            latest_message = latest_message[0]
 
         response.append(
             {
-                "friendId": friend_info.uid,
-                "friendName": friend_info.display_name,
-                "friendIconPath": friend_info.icon_path,
+                "friendId": friend_info[0].uid,
+                "friendName": friend_info[0].display_name,
+                "friendIconPath": friend_info[0].icon_path,
                 "messageType": latest_message.message_type,
                 "message": latest_message.message,
                 "createdAt": latest_message.create_at,
@@ -40,7 +46,7 @@ async def get_chatrooms(authorization: str = Header(None)):
     return response
 
 @router.post("/chatrooms/{friend_uid}")
-async def post_chatrooms(friend_name: str, authorization: str = Header(None)):
+async def post_chatrooms(friend_uid: str, authorization: str = Header()):
     # 私は誰か
     if authorization is None:
         raise HTTPException(status_code=401)
@@ -51,8 +57,11 @@ async def post_chatrooms(friend_name: str, authorization: str = Header(None)):
 
     new_friend=Friend(
         to_user_id = uid,
-        from_user_id = friend_name,
+        from_user_id = friend_uid,
     )
-    new_friend.insert()
+    try:
+        new_friend.insert()
+    except sqlalchemy.exc.IntegrityError:
+        return HTTPException(400)
 
     return {"message":"created"}
