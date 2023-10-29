@@ -10,10 +10,6 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-p", "admin"]
-      timeout: 5s
-      retries: 20
     volumes:
       - jphacks-volume:/var/lib/mysql
     restart: always
@@ -24,9 +20,6 @@ services:
       - 8000:8000
     volumes:
       - ./server:/src/server
-    depends_on:
-      db:
-        condition: service_healthy
 
 volumes:
   jphacks-volume:
