@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 
+import firebase
 from routers import chatroom, talkroom
 from fastapi.middleware.cors import CORSMiddleware
+
+firebase.init()
 
 app = FastAPI()
 

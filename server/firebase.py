@@ -1,5 +1,4 @@
 import firebase_admin
-import os
 from firebase_admin import credentials, auth
 
 from models.user import User
@@ -7,8 +6,9 @@ from models.user import User
 # firebase用の環境変数を設定
 # os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
 
-cred = credentials.Certificate("/src/server/jphacks2023-firebase-adminsdk-p2xu8-bfdf4713b0.json")
-firebase_admin.initialize_app(cred)
+def init():
+    cred = credentials.Certificate("/src/server/jphacks2023-firebase-adminsdk-p2xu8-bfdf4713b0.json")
+    firebase_admin.initialize_app(cred)
 
 def get_user_uid(auth_header: str) -> str:
     """authヘッダーからUIDを返却
