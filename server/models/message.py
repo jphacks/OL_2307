@@ -36,7 +36,7 @@ class Message(Base):
 
     def get_message_list(me, friend):
         return session.execute(
-            select(Message).where((Message.to_user_id == me and Message.from_user_id == friend)or(Message.to_user_id == friend and Message.from_user_id == me)).order_by(Message.create_at.desc())
+            select(Message).where((Message.to_user_id == me and Message.from_user_id == friend)or(Message.to_user_id == friend and Message.from_user_id == me)).order_by(Message.create_at)
         ).all()
 
 Base.metadata.create_all(engine)
