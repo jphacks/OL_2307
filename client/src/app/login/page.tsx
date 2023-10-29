@@ -78,7 +78,7 @@ const Login = () => {
         <div className="max-w-md">
           <h1 className="mb-5 text-5xl font-bold">ゆる友</h1>
           <h2>~最近調子どう？~</h2>
-          <p className="mb-5">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
+          <div className='h-12'></div>
           <button className="btn btn-primary" onClick={handleLogin}>Googleではじめる</button>
         </div>
       </div>

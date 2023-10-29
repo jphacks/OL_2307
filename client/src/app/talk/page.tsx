@@ -6,6 +6,7 @@ import { sessionState } from "../login/page";
 import Navi from "@/components/Navi";
 import axios from "axios";
 import Centence from "./centence";
+import Card from "./card";
 
 export const talkFriend = atom({
 	key: "talkFriend",
@@ -62,6 +63,7 @@ export default function page() {
 		}
 	}, [])
 
+
 	// メッセージを送信
 	const postMessage = () => {
 		if (session.token && !isSending && friend.friendId) {
@@ -95,20 +97,14 @@ export default function page() {
 		setMessage('');
 	}
 
+	useEffect(() => {
+		console.log(messages);
+	}, [messages])
+
 	const chats = messages.map((chat) =>
-		(chat.message_type)
-			? <Centence {...chat} />
-			: <div className="chat chat-start" key={Math.random()}>
-				<div className="chat-image avatar">
-					<div className="w-10 rounded-full ring ring-neutral ring-offset-base-100">
-						<img src={friend.friendIconPath} />
-					</div>
-				</div>
-				<div className="chat-bubble">{chat.message}</div>
-				<div className="chat-footer opacity-50 ml-2">
-					{getTimeString(chat.createAt)}
-				</div>
-			</div>
+		(chat.message_type === 'sentence')
+			? <Centence {...chat} key={Math.random()} />
+			: <Card {...chat} key={Math.random()} />
 	);
 
 	return (

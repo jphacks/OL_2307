@@ -108,9 +108,7 @@ export default function page() {
   const postCard = () => {
 		const uuid = crypto.randomUUID();
 		const formdata = new FormData()
-		formdata.append(uuid, image!)
-
-    const content = `{"img":"${uuid}","title":"${title}","body":"${body}"}`;
+		formdata.append('upload_file', image!)
 
     if(session.token && !isSending){
 
@@ -119,21 +117,26 @@ export default function page() {
 					Authorization: `Bearer ${session.token}`
 				},
 			}).then(res => {
+				const content = `{"img":"${uuid}","title":"${title}","body":"${body}"}`;
+
+				targets.forEach((targets) => {
+					axios.post(`${process.env.NEXT_PUBLIC_BACKEND }/messages`, {
+						recive_user: targets.friendId,
+						message_type: "card",
+						message: content
+					}, {
+						headers: {
+							Authorization: `Bearer ${session.token}`
+						},
+					});
+				});
+
+				console.log(res.data);
 				setIsSending(false);
 				setInEdit(true);
 			});
 
-      targets.forEach((targets) => {
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND }/messages`, {
-          recive_user: targets.friendId,
-          message_type: "sentence",
-          message: content
-        }, {
-          headers: {
-            Authorization: `Bearer ${session.token}`
-          },
-        });
-      });
+      
     }
   }
 
