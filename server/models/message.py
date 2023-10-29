@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Column, String, DATETIME, select
+from sqlalchemy import Column, String, DATETIME, Text, select
 from models.db import Base, session, engine
 
 import uuid
@@ -11,7 +11,7 @@ class Message(Base):
     to_user_id = Column(String(255))
     from_user_id = Column(String(255))
     message_type = Column(String(255)) # sentence, image, card
-    message = Column(String(255))
+    message = Column(Text)
     # sentence: 文字列
     # image: 画像のパス
     # card: {color: "", type: "", title: "", message: ""}

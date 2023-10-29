@@ -23,7 +23,6 @@ async def get_message(friend_uid: str, authorization: str = Header(None)):
 
     response = []
     for message in message_list:
-        print(message)
         response.append(
             {
                 "fromUserId": message[0].from_user_id,
