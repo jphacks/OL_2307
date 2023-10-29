@@ -27,6 +27,7 @@ async def get_message(friend_uid: str, authorization: str = Header(None)):
         response.append(
             {
                 "fromUserId": message[0].from_user_id,
+                "message_type": message[0].message_type,
                 "message": message[0].message,
                 "createdAt": message[0].create_at,
             }
