@@ -1,9 +1,8 @@
+import shutil
 from fastapi import APIRouter, Header, HTTPException, UploadFile
 
 from pydantic import BaseModel
 import firebase
-from models.friend import Friend
-from models.user import User
 from models.message import Message
 from models.db import session
 
