@@ -1,4 +1,5 @@
 import shutil
+import uuid
 from fastapi import APIRouter, Header, HTTPException, UploadFile
 
 from pydantic import BaseModel
@@ -59,7 +60,7 @@ async def post_messages(message_body: MessageBody, authorization: str = Header(N
 
 @router.post("/images")
 async def post_images(upload_file: UploadFile):
-    path = f"/src/server/files/{upload_file.filename}"
+    path = f"/src/server/image/{upload_file.filename}"
     with open(path, "wb+") as buffer:
         shutil.copyfileobj(upload_file.file, buffer)
     return {"filename": path}
