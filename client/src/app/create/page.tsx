@@ -3,6 +3,9 @@
 import { ProtectRoute } from "@/components/ProtectRoute";
 import { useEffect, useRef, useState } from "react";
 import Navi from "@/components/Navi";
+import { sessionState } from "../login/page";
+import { useRecoilValue } from "recoil";
+import axios from "axios";
 
 
 interface friend {
@@ -17,59 +20,29 @@ export default function page() {
 
 	const [profileImage, setProfileImage] = useState<null | string>(null);
 	const [inEdit, setInEdit] = useState(true);
+
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
+  const [image, setImage] = useState<File | undefined>();
+
 	const [nTarget, setNTarget] = useState(0);
 	const [friends, setFriend] = useState<friend[]>([]);
 	const [targets, setTargets] = useState<friend[]>([]);
 
-	const res = [{
-		"friendId": "a",
-		"friendName": "aaaaa",
-		"friendIconPath": "https://tinyurl.com/yklh4rmz",
-		"message": "aaaaa",
-		"createdAt": "2023-01-01 00:00:00"
-	},
-	{
-		"friendId": "aa",
-		"friendName": "aaaaa",
-		"friendIconPath": "https://tinyurl.com/yklh4rmz",
-		"message": "aaaaa",
-		"createdAt": "2023-01-01 00:00:00"
-	},
-	{
-		"friendId": "aaa",
-		"friendName": "aaaaa",
-		"friendIconPath": "https://tinyurl.com/yklh4rmz",
-		"message": "aaaaa",
-		"createdAt": "2023-01-01 00:00:00"
-	},
-	{
-		"friendId": "aaaa",
-		"friendName": "aaaaa",
-		"friendIconPath": "https://tinyurl.com/yklh4rmz",
-		"message": "aaaaa",
-		"createdAt": "2023-01-01 00:00:00"
-	},
-	{
-		"friendId": "aaaaa",
-		"friendName": "aaaaa",
-		"friendIconPath": "https://tinyurl.com/yklh4rmz",
-		"message": "aaaaa",
-		"createdAt": "2023-01-01 00:00:00"
-	},
-	{
-		"friendId": "aaaa",
-		"friendName": "aaaaa",
-		"friendIconPath": "https://tinyurl.com/yklh4rmz",
-		"message": "aaaaa",
-		"createdAt": "2023-01-01 00:00:00"
-	}];
+  const [isSending, setIsSending] = useState(false);
+
+	const session = useRecoilValue(sessionState);
 
 	useEffect(() => {
-		// TODO: fetch
-		setFriend(res);
-	}, []);
+		if(session.token){
+      axios.get( process.env.NEXT_PUBLIC_BACKEND +'/chatrooms', {
+        headers: { Authorization: `Bearer ${session.token}` }
+      }).then((res => {
+        setFriend(res.data);
+        console.log(res.data);
+      }));
+    }
+	}, [session]);
 
 	// friendListの中から無作為に n 人選んで targets に入れる
 	const randomSelect = () => {
@@ -114,14 +87,55 @@ export default function page() {
 		}
 	};
 
+  const getTimeString = (datetime: string) => {
+		if (!datetime) return '';
+		const time = datetime.split('T')[1];
+		const num = time.split(':');
+		return `${num[0]}:${num[1]}`
+	}
+
 
 	const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (!e.target.files) return;
 		// React.ChangeEvent<HTMLInputElement>よりファイルを取得
 		const fileObject = e.target.files[0];
+		setImage(e.target.files[0]);
 		// オブジェクトURLを生成し、useState()を更新
 		setProfileImage(window.URL.createObjectURL(fileObject));
+
 	};
+
+  const postCard = () => {
+		const uuid = crypto.randomUUID();
+		const formdata = new FormData()
+		formdata.append(uuid, image!)
+
+    const content = `{"img":"${uuid}","title":"${title}","body":"${body}"}`;
+
+    if(session.token && !isSending){
+
+			axios.post(`${process.env.NEXT_PUBLIC_BACKEND }/images`, formdata, {
+				headers: {
+					Authorization: `Bearer ${session.token}`
+				},
+			}).then(res => {
+				setIsSending(false);
+				setInEdit(true);
+			});
+
+      targets.forEach((targets) => {
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND }/messages`, {
+          recive_user: targets.friendId,
+          message_type: "sentence",
+          message: content
+        }, {
+          headers: {
+            Authorization: `Bearer ${session.token}`
+          },
+        });
+      });
+    }
+  }
 
 
 	const targetJSX = targets.map((elem) => {
@@ -134,7 +148,7 @@ export default function page() {
 				</div>
 				<div className="">
 					<p className="font-bold text-lg">{elem.friendName} </p>
-					<p className="text-right">{ '最終会話日: ' + elem.createdAt.split(' ')[0].replaceAll('-', '/')}</p>
+					<p className="text-right">{ '最終会話日: ' + getTimeString(elem.createdAt)}</p>
 				</div>
 			</div>
 		);
@@ -158,7 +172,6 @@ export default function page() {
 								<h1 className="m-2 text-lg text-center">きっかけのカードを作ろう！</h1>
 
 								{/* hidden file input element */}
-								{/* <button onClick={handleButtonClick}>ファイルを選択</button> */}
 								<input className="hidden" type="file" accept="image/*" ref={fileInputRef} onChange={onFileInputChange} />
 
 
@@ -173,14 +186,16 @@ export default function page() {
 										}
 									<div className="card-body">
 										<h2 className="card-title">
-											<input type="text" placeholder="Type here" className="input input-bordered input-sm w-full max-w-xs" />
+											<input type="text" placeholder="タイトル" className="input input-bordered input-sm w-full max-w-xs" 
+                      value={title} onChange={(event) => setTitle(event.target.value)} />
 										</h2>
-										<textarea placeholder="Bio" className="textarea textarea-bordered textarea-sm w-full max-w-xs" />
+										<textarea placeholder="内容" className="textarea textarea-bordered textarea-sm w-full max-w-xs" 
+                      value={body} onChange={(event) => setBody(event.target.value)}/>
 									</div>
 								</div>
 								<div className="flex justify-center m-8 text-center">
 									<button className="mx-1 btn btn-accent" onClick={handleButtonClick}>画像の設定</button>
-									<button className="mx-1 btn btn-primary" onClick={() => {
+									<button className="mx-1 btn btn-primary" disabled={ !image || !title || !body} onClick={() => {
 										setInEdit(false);
 									}}>送信先の選択</button>
 								</div>
@@ -205,7 +220,11 @@ export default function page() {
 									}}>戻る</button>
 									{
 										(targets.length)
-										? <button className="m-2 btn btn-accent">送信</button>
+										? <button className="m-2 btn btn-accent" onClick={postCard}>{ 
+                      (isSending)
+                      ? <span className="loading loading-spinner loading-md"></span>
+                      : '送信'
+                    }</button>
 										: <button className="m-2 btn" disabled={true}>送信</button>
 									}
 									

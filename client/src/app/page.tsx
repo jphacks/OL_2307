@@ -2,65 +2,40 @@
 
 import { ProtectRoute } from '@/components/ProtectRoute'
 import Navi from "@/components/Navi";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TalkTile from '@/components/TalkTile';
+import axios from "axios";
+import { useRecoilValue } from 'recoil';
+import { sessionState } from './login/page';
+
+interface friend {
+  friendId: string;
+  friendName: string;
+  friendIconPath: string;
+  message: string;
+  createdAt: string;
+}
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const session = useRecoilValue(sessionState);
 
-  const res = [
-    {
-      "friendId": "a",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
-    },
-    {
-      "friendId": "aa",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
-    },
-    {
-      "friendId": "aaa",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
-    },
-    {
-      "friendId": "aaaa",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
-    },
-    {
-      "friendId": "aaaaa",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
-    },
-    {
-      "friendId": "aaaaaa",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
-    },
-    {
-      "friendId": "aaaaaaa",
-      "friendName": "aaaaa",
-      "friendIconPath": "https://tinyurl.com/yklh4rmz",
-      "message": "aaaaa",
-      "createdAt": "2023-01-01 00:00:00"
+  const [friends, setFriends] = useState<friend[]>([]);
+
+
+  useEffect(() => {
+    if(session.token){
+      axios.get(process.env.NEXT_PUBLIC_BACKEND + '/chatrooms', {
+        headers: { Authorization: `Bearer ${session.token}` }
+      }).then((res => {
+        setFriends(res.data);
+        console.log(res.data);
+        setIsLoading(false);
+      }));
     }
-  ];
+  },[session])
 
-  const talks = res.map((talk) =>
+  const talks = friends.map((talk) =>
     <div className='my-4 border-b-2 border-neutral border-opacity-80' key={talk.friendId}>
       <TalkTile {...talk} />
     </div>
